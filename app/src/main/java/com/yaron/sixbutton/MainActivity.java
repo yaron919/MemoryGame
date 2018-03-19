@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
             secondBtn.setBackgroundResource(android.R.drawable.star_big_on);
             secondBtn.setText("");
         } else {
+            //TODO change to default button icon
             firstBtn.setBackgroundResource(android.R.drawable.btn_default);
             secondBtn.setBackgroundResource(android.R.drawable.btn_default);
             firstBtn.setEnabled(true);
@@ -138,3 +139,4 @@ public class MainActivity extends AppCompatActivity {
         count = 0;
     }
 }
+ // TODO use the others of activity and not only onCreate
