@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Memory Game</string>
-    <string name="bla"> Bla </string>
+    <string name="easyBT"> EASY </string>
+    <string name="mediumBT">MEDIUM</string>
+    <string name="hardBT">HARD</string>
+    <string name="newgameBT">NEW GAME</string>
+    <string name="nameTV">Enter your name:</string>
+    <string name="ageTV">Enter your age:</string>
 </resources>
