@@ -1,19 +1,22 @@
 package com.yaron.sixbutton;
 
+import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.os.CountDownTimer;
 import android.content.Intent;
 
 public class Game extends AppCompatActivity {
-    private String name;
-    private int size;
-    private int timer;
+    String name;
+    int size;
+    int timer;
     TextView timerTV;
     TextView nameTV;
     Intent intent ;
@@ -53,6 +56,8 @@ public class Game extends AppCompatActivity {
             }
         }.start();
         //TODO to decide how to woke with gridlayout or tablelayout
+        createButtons();
+/*
         GridLayout gl = (GridLayout)findViewById(R.id.gl);
         gl.setColumnCount(size);
         for (int i = 0;i<size;i++) {
@@ -64,6 +69,8 @@ public class Game extends AppCompatActivity {
                 gl.addView(btn);
             }
         }
+*/
+
 
     }
 
@@ -72,5 +79,26 @@ public class Game extends AppCompatActivity {
         super.onDestroy();
         countDownTimer.cancel();
     }
+    private void createButtons(){
 
+        TableLayout table = (TableLayout) findViewById(R.id.table_act_game);
+        for (int i = 0; i < size;i++){
+            TableRow tableRow = new TableRow(this);
+            tableRow.setLayoutParams(new TableLayout.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    1.0f
+            ));
+            table.addView(tableRow);
+            for (int j=0; j<size;j++){
+                Button button = new Button(this);
+                button.setLayoutParams(new TableLayout.LayoutParams(
+                        TableRow.LayoutParams.MATCH_PARENT,
+                        TableRow.LayoutParams.MATCH_PARENT,
+                        1.0f
+                ));
+                tableRow.addView(button);
+            }
+        }
+    }
 }
