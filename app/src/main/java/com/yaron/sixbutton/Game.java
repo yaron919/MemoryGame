@@ -85,14 +85,14 @@ public class Game extends AppCompatActivity {
         for (int i = 0; i < size;i++){
             TableRow tableRow = new TableRow(this);
             tableRow.setLayoutParams(new TableLayout.LayoutParams(
-                    TableRow.LayoutParams.MATCH_PARENT,
-                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.MATCH_PARENT,
                     1.0f
             ));
             table.addView(tableRow);
             for (int j=0; j<size;j++){
                 Button button = new Button(this);
-                button.setLayoutParams(new TableLayout.LayoutParams(
+                button.setLayoutParams(new TableRow.LayoutParams(
                         TableRow.LayoutParams.MATCH_PARENT,
                         TableRow.LayoutParams.MATCH_PARENT,
                         1.0f
