@@ -35,7 +35,7 @@ public class Levels extends AppCompatActivity {
     }
     public void hardLevel(View v)
     {
-        intent.putExtra("SIZE",5);
+        intent.putExtra("SIZE",6);
         intent.putExtra("TIMER",60);
         startActivity(intent);
     }

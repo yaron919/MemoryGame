@@ -11,7 +11,6 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.os.CountDownTimer;
-import android.content.Intent;
 import java.util.ArrayList;
 import android.content.res.TypedArray;
 import java.util.Random;
@@ -26,8 +25,8 @@ public class Game extends AppCompatActivity {
     TextView nameTV;
     AlertDialog.Builder alert;
     CountDownTimer countDownTimer;
-    ImageView [] imageViews;
-    int buttonId1 = -1;
+    private ImageView [][] imageViews;
+    int imageView1 = -1;
     int winCounter = 0;
     private ArrayList imagesIds1 = new ArrayList();
     private ArrayList imagesIds2= new ArrayList();
@@ -41,35 +40,15 @@ public class Game extends AppCompatActivity {
         name = extras.getString("NAME");
         size = extras.getInt("SIZE");
         timer =extras.getInt("TIMER");
-        imageViews = new ImageView[size*size];
+
         nameTV = findViewById(R.id.name_tv_ga);
         timerTV = findViewById(R.id.timer_tv_ga);
         nameTV.setText(name);
         timer = timer * 1000;
         alert = new AlertDialog.Builder(this);
-        countDownTimer = new CountDownTimer(timer, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                timerTV.setText("Timer: "+millisUntilFinished / 1000);
-            }
-
-            public void onFinish() {
-                timerTV.setText("Timer: 0");
-                alert.setMessage("You are lost !!")
-                        .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                finish();
-                            }
-                        })
-                        .create();
-                alert.show();
-            }
-        }.start();
+        setTimer();
         createButtons();
-        lockImageViewsSizes();
-        //setStartImage();
+
 
 
 
@@ -83,29 +62,34 @@ public class Game extends AppCompatActivity {
         countDownTimer.cancel();
     }
     private void createButtons(){
-
         TableLayout table = (TableLayout) findViewById(R.id.table_act_game);
-        for (int i = 0; i < size;i++){
+        table.setPadding(8,16,8,0);
+        imageViews = new ImageView[size][size];
+        for (int i = 0; i < size; i++){
             TableRow tableRow = new TableRow(this);
             tableRow.setLayoutParams(new TableLayout.LayoutParams(
                     TableLayout.LayoutParams.MATCH_PARENT,
                     TableLayout.LayoutParams.MATCH_PARENT,
-                    1.0f
+                    4.0f
             ));
             table.addView(tableRow);
-            for (int j=0; j<size;j++){
+            for (int j = 0; j < size; j++){
                 final ImageView imageView = new ImageView(this);
                 imageView.setLayoutParams(new TableRow.LayoutParams(
                         TableRow.LayoutParams.MATCH_PARENT,
                         TableRow.LayoutParams.MATCH_PARENT,
-                        1.0f
+                        4.0f
                 ));
                 imageView.setAdjustViewBounds(true);
+                imageView.setCropToPadding(true);
                 int id = setPictureForButton((size*size)/2);
                 imageView.setId(id);
+                imageView.setPadding(10,10,10,10);
+                imageView.setMinimumWidth(0);
+                imageView.setMaxWidth(0);
+                imageView.setMinimumHeight(0);
+                imageView.setMaxHeight(0);
                 imageView.setImageResource(R.drawable.question_mark);
-                imageView.setPadding(6,6,6,6);
-                //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -118,10 +102,12 @@ public class Game extends AppCompatActivity {
                         },500);
                     }
                 });
-                imageViews[i*size+j]=imageView;
-                tableRow.addView(imageViews[i*size+j]);
+                imageViews[i][j] = imageView;
+                tableRow.addView(imageView);
+
             }
         }
+
     }
     private int setPictureForButton(int size){
         int id = getRandomImage(size);
@@ -142,49 +128,28 @@ public class Game extends AppCompatActivity {
         return id;
     }
     private void setIvActivity(ImageView iv,int pictureId){
-        //set background with scaling
-        int newWidth = iv.getWidth();
-        int newHeight = iv.getHeight();
         Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(),pictureId);
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap,newWidth,newHeight,true);
-        iv.setImageBitmap(scaledBitmap);
+        iv.setImageBitmap(originalBitmap);
         iv.setClickable(false);
     }
-    private void lockImageViewsSizes(){
-        for(int i = 0; i<size;i++){
-            for(int j =0;j<size;j++){
-                ImageView iv = imageViews[i*size+j];
-                int width = iv.getWidth();
-                int height = iv.getHeight();
-                iv.setMinimumWidth(width);
-                iv.setMaxWidth(width);
-                iv.setMinimumHeight(height);
-                iv.setMaxHeight(height);
-            }
-        }
-    }
     private void isSame(ImageView ivPressed){
-        if(buttonId1 == -1)
+        if(imageView1 == -1)
         {
             v1=ivPressed;
-            buttonId1 = ivPressed.getId();
+            imageView1 = ivPressed.getId();
         }
-        else if (buttonId1 == ivPressed.getId()){ //match!
-            //setButtonActivity(size,ivPressed,R.drawable.match);
+        else if (imageView1 == ivPressed.getId()){ //match!
             v2 = ivPressed;
             winChecker();
-            buttonId1 = -1;
+            imageView1 = -1;
         }else{ // no match
             v2 = ivPressed;
-            int newWidth =  ivPressed.getWidth();
-            int newHeight = ivPressed.getHeight();
             Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.question_mark);
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap,newWidth,newHeight,true);
-            v1.setImageBitmap(scaledBitmap);
+            v1.setImageBitmap(originalBitmap);
             v1.setClickable(true);
-            v2.setImageBitmap(scaledBitmap);
+            v2.setImageBitmap(originalBitmap);
             v2.setClickable(true);
-            buttonId1 = -1;
+            imageView1 = -1;
         }
 
     }
@@ -204,16 +169,27 @@ public class Game extends AppCompatActivity {
             alert.show();
         }
     }
-    private void setStartImage(){
-        for(int i=0;i<size;i++){
-            for(int j=0;j<size;j++){
-                int newWidth =  imageViews[i*size+j].getWidth();
-                int newHeight =  imageViews[i*size+j].getHeight();
-                Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.question_mark);
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap,newWidth,newHeight,true);
-                imageViews[i*size+j].setImageBitmap(scaledBitmap);
+    private void setTimer() {
+        countDownTimer = new CountDownTimer(timer, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                timerTV.setText("Timer: "+millisUntilFinished / 1000);
             }
-        }
+
+            public void onFinish() {
+                timerTV.setText("Timer: 0");
+                alert.setMessage("You are lost !!")
+                        .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        })
+                        .create();
+                alert.show();
+            }
+        }.start();
     }
 
 }
